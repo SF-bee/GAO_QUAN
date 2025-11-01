@@ -1,0 +1,1 @@
+{"name":"Local: P1226","url":"e:\\code\\XJproject\\P1226\\P1226.cpp","tests":[{"id":1722954045084,"input":"2 10 9","output":"2^10 mod 9=7"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\code\\XJproject\\P1226\\P1226.cpp","group":"local","local":true}
