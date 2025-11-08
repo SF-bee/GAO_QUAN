@@ -1,0 +1,7 @@
+.vscode/*
+
+*.exe
+*.in
+*.out
+*.ans
+*.zip
