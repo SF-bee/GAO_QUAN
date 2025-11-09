@@ -1,1 +1,0 @@
-{"name":"Local: T486180","url":"e:\\code\\XJproject\\T486180\\T486180.cpp","tests":[{"id":1722155849531,"input":"4\n1 4\n2 3\n2 4\n5 6","output":"3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\code\\XJproject\\T486180\\T486180.cpp","group":"local","local":true}
