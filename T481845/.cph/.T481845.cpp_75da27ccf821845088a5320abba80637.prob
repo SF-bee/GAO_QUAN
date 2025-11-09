@@ -1,0 +1,1 @@
+{"name":"Local: T481845","url":"e:\\code\\XJproject\\T481845\\T481845.cpp","tests":[{"id":1721523616311,"input":"100000 4\n1 3 3 123456\n1 2 4 726\n2 2 4\n2 3 3","output":"726\n123456"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\code\\XJproject\\T481845\\T481845.cpp","group":"local","local":true}

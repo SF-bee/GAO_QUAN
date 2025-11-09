@@ -1,0 +1,1 @@
+{"name":"Local: P10726","url":"e:\\code\\GAO_QUAN\\P10726\\P10726.cpp","tests":[{"id":1722655732542,"input":"3\n3 1\n5 6 3\n3 5 6\n1 4 100000","output":"100001"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\code\\GAO_QUAN\\P10726\\P10726.cpp","group":"local","local":true}

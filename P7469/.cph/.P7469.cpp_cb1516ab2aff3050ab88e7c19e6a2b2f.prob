@@ -1,0 +1,1 @@
+{"name":"Local: P7469","url":"e:\\code\\XJproject\\P7469\\P7469.cpp","tests":[{"id":1722420369120,"input":"5\nbcabc\nbbcca","output":"9"},{"id":1722420381726,"input":"20\negebejbhcfabgegjgiig\nedfbhhighajibcgfecef","output":"34"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"e:\\code\\XJproject\\P7469\\P7469.cpp","group":"local","local":true}
