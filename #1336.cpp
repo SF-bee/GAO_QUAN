@@ -21,6 +21,5 @@ int main(){
         g[e[i].first].push_back(e[i].second);
         g[e[i].second].push_back(e[i].first);
     }
-    
     return 0;
 }
