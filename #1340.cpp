@@ -19,10 +19,10 @@ int main() {
         for(auto v : g[u]) {
             if(!dfn[v]){
                 dfs(dfs,v);
-                low[u] = std::min(low[u],dfn[v]);
+                low[u] = std::min(low[u], low[v]);
             }
             else if(ins[v])
-                low[u] = std::min(low[u],low[v]);
+                low[u] = std::min(low[u], dfn[v]);
         }
         if(low[u] == dfn[u]) {
             cnt++;
