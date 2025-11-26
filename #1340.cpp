@@ -41,7 +41,7 @@ int main() {
             ind[scc[v]]++;
     int c = 0;
     for(int i = 1;i <= cnt;i++)
-        if(ind[i] == 0 && siz[i] == 1) c++;
+        if(ind[i] == 0) c++;
     double ans = 1.0 - (double)c / (double)n;
     std::cout << std::fixed << std::setprecision(6) << ans << '\n';
     return 0;

@@ -2,6 +2,7 @@
 
 *.exe
 main
+check.cpp
 *.in
 *.out
 *.ans
