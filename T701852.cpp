@@ -1,22 +1,24 @@
 #include <bits/stdc++.h>
-const int MAX = 3e6 + 5;
+#define int long long
+const int MAX = 1e7 + 5;
 
 int n,top;
+int ls[MAX],rs[MAX];
 int a[MAX],stk[MAX];
 
-int main(){
+signed main(){
     std::cin.tie(0) -> sync_with_stdio(0);
 
     std::cin >> n;
-    for(int i = 1;i <= n;i++)
+    for(int i = 1;i <= n;i++){
         std::cin >> a[i];
-    std::vector<int> ans(n + 1,0);
-    for(int i = n;i >= 1;i--){
-        while(top && a[stk[top]] <= a[i]) top--;
-        ans[i] = stk[top];
+        while(top && a[stk[top]] > a[i]) ls[i] = stk[top--];
+        if(top) rs[stk[top]] = i;
         stk[++top] = i;
     }
+    int a1 = 0,a2 = 0;
     for(int i = 1;i <= n;i++)
-        std::cout << ans[i] << " \n"[i == n];
+        a1 ^= (i * (ls[i] + 1)), a2 ^= (i * (rs[i] + 1));
+    std::cout << a1 << ' ' << a2 << '\n';    
     return 0;
 }
