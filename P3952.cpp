@@ -32,7 +32,7 @@ void solve() {
     int tim = 0,ntim = 0; //当前复杂度数量级
     std::stack<rep> rpls;
     std::unordered_set<std::string> vis; //表示当前定义域内已经声明的变量
-    bool inact = 0,err = 0; //inact表示是否在在有效循环中，err表示存在语法错误
+    bool inact = 1,err = 0; //inact表示是否在有效循环中，err表示存在语法错误
     for(int i = 1;i <= l;i++){
         char op;
         std::string num,x,y;
@@ -42,22 +42,25 @@ void solve() {
             case 'F':
                 std::cin >> num >> x >> y;
                 in.init(num,x,y);
-                if(vis.count(in.i)) err = 1;
+                if(vis.count(in.i)) err = true;
                 vis.insert(in.i);
                 if(!in.act || !inact) {
-                    inact = 0;
-                    in.act = 0;
+                    in.act = false;
+                    inact = false;
                 }
-                else if(in.is_n) tim++;
-                ntim = std::max(ntim,tim);
+                if(in.act && in.is_n){
+                    tim++;
+                    ntim = std::max(ntim,tim);
+                }
                 rpls.push(in);
                 break;
             case 'E':
-                if(rpls.empty()) err = 1;
+                if(rpls.empty()) err = true;
                 else {
                     auto [i,act,is_n] = rpls.top();
                     rpls.pop();
-                    if(is_n) tim--;
+                    vis.erase(i);
+                    if(act && is_n) tim--;
                     if(!act) {
                         if(rpls.empty() || rpls.top().act)
                             inact = true;
