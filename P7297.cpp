@@ -6,6 +6,9 @@ int n,k,b[MAX];
 bool s[K][K];
 struct node {
     int col,to,dis;
+    bool operator < (const node &rhs) const {
+        return dis > rhs.dis;
+    }
 };
 std::vector<node> g[K][MAX]; //i表示颜色，j表示节点编号
 int dis[K][MAX];
@@ -30,5 +33,8 @@ int main() {
         for(int j = 1;j <= k;k++)
             g[b[i]][i].push_back({j,i,0});
     }
+    std::priority_queue<node> que;
+    que.push({});
+
     return 0;
 }
