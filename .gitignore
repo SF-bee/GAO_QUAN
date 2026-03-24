@@ -1,11 +1,58 @@
-.vscode/*
-.cph/*
-testlib-0.9.41
+# ====================
+# 信奥竞赛专用忽略文件
+# ====================
 
+# 编译输出文件
 *.exe
+*.out
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.exe.stackdump
+
+# 常用可执行文件名（避免误提交）
 main
-check.cpp
+a.out
+a.exe
+main.exe
+test.exe
+debug.exe
+
+# 测试数据文件
 *.in
 *.out
 *.ans
+*.txt   # 如果临时测试文件也忽略
+data/
+testdata/
+input/
+output/
+
+# VSCode 配置（便携版常见目录）
+.vscode/
+.vscode/*
+.cph/           # 竞赛辅助插件目录
+
+# 其他编辑器临时文件
+*.swp
+*.swo
+*~
+*.bak
+*.log
+
+# 压缩包
 *.zip
+*.7z
+*.rar
+*.tar.gz
+
+# 测试或调试专用文件
+testlib-0.9.41   # testlib 库文件
+check.cpp        # 自定义对拍/校验程序
+
+# 个人脚本/配置备份（如果有）
+*.bat
+*.sh
