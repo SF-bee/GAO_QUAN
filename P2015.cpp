@@ -15,7 +15,7 @@ int main(){
         g[u].emplace_back(v, w);
         g[v].emplace_back(u, w);
     }
-    auto dfs = [&](auto &dfs,int u,int f) -> void{
+    auto dfs = [&](auto &dfs,int u,int f) -> void {
         int lc = 0,lw = 0,rc = 0,rw = 0;
         siz[u] = 1;
         for(auto [v,w] : g[u]) if(v != f){

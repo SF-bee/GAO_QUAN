@@ -15,7 +15,7 @@ int main(){
         g[k].push_back(i);
     }
 
-    auto dfs = [&](auto & dfs,int u) -> void{
+    auto dfs = [&](auto & dfs,int u) -> void {
         dp[u][1] = s[u];
         siz[u] = 1;
         for(auto v : g[u]){
