@@ -6,6 +6,26 @@
 
 本仓库用于存储平时算法竞赛练习的代码，主要使用 C++ 语言。包含各类算法模板、解题代码和学习笔记。
 
+## 📜 仓库结构
+
+```
+GAO_QUAN/
+├── Templates/             # 存放代码模板
+│   ├── DataStructure/     
+│   ├── Graph/
+|   ├── Math/        
+│   └── ……    
+├── Code/                  # 存放平时刷的题 
+|   ├── Luogu/
+|   ├── CF/
+│   └── ……
+├── Solution/              # 题解
+├── Notes/                 # 我的笔记
+│   └── Mistake_Log.md     
+├── Scripts/               # 存放各种脚本
+└── Makefile               # 一键编译
+```
+
 -----
 
 $$\small\texttt{本}\huge\texttt{人}_{\small\texttt{的}^{\large\texttt{萌新}\small\texttt{QAQ}}}^{\large\texttt{是}{\small\texttt{刚学}\large\texttt{OI}}}\huge\texttt{但是}^{\large\texttt{即}{\small\texttt{使}}}_{\normalsize\text{是这样}}\texttt{我也}^{\small\texttt{要}\normalsize\texttt{用}\texttt{蒟}_{\texttt{蒻}\large\texttt{的}}}_{\scriptsize\texttt{声音大声喊出}}\texttt{I AK IOI!}$$
@@ -13,7 +33,6 @@ $$\small\texttt{本}\huge\texttt{人}_{\small\texttt{的}^{\large\texttt{萌新}
 ## 📝 学习记录
 
 ### 🎯 近期目标
-- [ ] 掌握AC自动机
 - [ ] 练习动态规划优化技巧
 - [ ] 刷完 NOIP2024
 
