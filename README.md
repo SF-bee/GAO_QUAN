@@ -33,31 +33,33 @@ $$\small\texttt{本}\huge\texttt{人}_{\small\texttt{的}^{\large\texttt{萌新}
 ## 📝 学习记录
 
 ### 🎯 近期目标
+
 - [ ] 练习动态规划优化技巧
 - [ ] 刷完 NOIP2024
 
 ## 💡 使用说明
 
-**环境要求**
-```
-C++14/17标准支持
+### 环境要求
+
+```md
+(G++ 9.4)C++14 标准支持
 ```
 
-**编译运行**
+### 编译运行
 
-```
-g++ sol.cpp -o main -O2 -std=c++17;./main
+```bash
+g++ sol.cpp -o main -O2 -std=c++14 -Wall -Wextra -fsanitize=address;./main
 ```
 
 ## 🤝 贡献与交流
 
 虽然这是个人练习仓库，但欢迎：
 
-* 提出代码优化建议
+- 提出代码优化建议
 
-* 分享更好的解题思路
+- 分享更好的解题思路
 
-* 讨论算法学习心得
+- 讨论算法学习心得
 
 <div align="center">
 ⭐ 如果这个仓库对你有帮助，请给我一个star！⭐
