@@ -35,7 +35,193 @@ int dfs(int pos, int state, bool limit, bool lead)
 
 ## 例题
 
-### [[SCOI2009] windy 数](https://www.luogu.com.cn/problem/P2657)
+### [Luogu P2657 [SCOI2009] windy 数](https://www.luogu.com.cn/problem/P2657)
 
-- 考虑数位 DP。
-- 状态定义： $f_{i,j}$ 表示考虑到第 $i$ 位，前一位填入的数是 $j$ 的答案数
+**Windy 数的定义**：不含前导零，且任意相邻两个数字之差的绝对值 $\ge 2$ 的正整数。
+本题属于标准的**数位 DP 经典题**。因为区间 $[a, b]$ 的范围较大 ($2 \times 10^9$)，直接暴力枚举必然超时，需要利用数位 DP 按照“逐位填数”的模型进行记忆化计数，再通过前缀和思想转化为求 `get(b) - get(a - 1)`。
+
+在递归函数 `dfs(pos, last, lim, lead)` 中，每个维度的作用和来龙去脉如下：
+
+1. **`pos`（当前数位）**：从最高位（`num.size() - 1`）向最低位（`0`）递归填数。
+2. **`last`（上一位填写的数字）**：由于题目限制“相邻两个数字之差至少为 2”，我们需要知道上一位填了什么，才能决定当前位能填什么（即满足 $|last - i| \ge 2$）。
+3. **`lim`（是否贴上限）**：
+   - 若 `lim == true`，说明前面的高位填的数字都和上界完全一致，当前位能填的最大数字受限制，只能填到 `num[pos]`。
+   - 若 `lim == false`，限制解除，当前位可以自由填写 `0 ~ 9`。
+4. **`lead`（是否存在前导零）**：
+   - **核心细节**：前导零并不算作真正的数字！例如，数字 `9` 在三位数中表现为 `009`，第一个 `0` 与第二个 `0`、第二个 `0` 与 `9` 之间是**不触发**差值限制的。
+   - 因此，只有在 `lead == false`（前面已经填过有效数字）时，才需要检查 `std::abs(last - i) >= 2`。
+
+我们使用二维数组 $f[pos][last]$ 记录通用的方案数。**注意：并不是所有的 DFS 返回值都能存入 $f$ 数组！**
+
+- **为什么贴上限（`lim == true`）不能存取？** 因为贴上限时搜索的分支是不完整的（受限于上界），其答案是个“阉割版”，不具备对其他数字的通用性。
+- **为什么有前导零（`lead == true`）不能存取？** 此时前面的数字还没真正开始，`last` 传的值是无意义的无效数据（如默认传 `0`），它的后续方案数和正常的 `last == 0` 完全不同。
+
+> 💡 **数位 DP 记忆化铁律**：首尾条件必须严格对称。**开头怎么查，结尾就怎么存。** 即只有在 `!lim && !lead` 的完全自由状态下，才能进行缓存的读取与写入。
+
+---
+
+## 4. AC 代码
+
+```cpp line-numbers
+#include <bits/stdc++.h>
+using ll = long long;
+const int POS = 20;
+const int N = 15;
+
+using Row = std::array<ll, N>;
+ll a, b;
+std::array<Row, POS> f;
+
+int main() {
+    std::cin.tie(0)->sync_with_stdio(0);
+
+    std::cin >> a >> b;
+
+    auto get = [&](ll  x) {
+        // 初始化为 -1，因为方案数可能为 0，用 0 判断是否访问过会重复计算
+        memset(&f, -1, sizeof(f));
+        std::vector<int> num;
+        while (x) {
+            num.push_back(x % 10);
+            x /= 10;
+        }
+        // pos:当前位, last:上一位的数字, lim:是否贴上限, lead:是否有前导零
+        auto dfs = [&](auto &self, int pos, int last, bool lim, bool lead) -> ll {
+            // 边界条件：各位填完。若全是一直前导零则是数字 0 (不合题意)，
+            // 否则说明找到了 1 个合法正整数。
+            if (pos < 0)
+                return !lead;
+            // 只有在不贴上限、且没有前导零的通用状态下，才能复用和写入记录
+            if (!lim && !lead && f[pos][last] != -1)
+                return f[pos][last];
+            int up = lim ? num[pos] : 9;
+            ll ans = 0;
+            for (int i = 0; i <= up; i++) {
+                if (lead && i == 0) {
+                    // 情况 A：依然是前导零，不触发相邻差限制，last 随便传个 0
+                    ans += self(self, pos - 1, 0, false, true);
+                } else {
+                    // 情况 B：正常填数（或是前导零后的第一个有效数字）
+                    // 核心 2：如果是第一个数字(lead==true)，无限制；否则必须满足差值 >= 2
+                    if (lead || std::abs(last - i) >= 2) {
+                        // 核心 3：当下层也贴上限的条件：当前贴上限且当前位填到了最大值
+                        ans += self(self, pos - 1, i, lim && (i == up), false);
+                    }
+                }
+            }
+            if (!lim && !lead)
+                f[pos][last] = ans;
+            return ans;
+        };
+        return dfs(dfs, num.size() - 1, 0, true, true);
+    };
+    std::cout << get(b) - get(a - 1) << '\n';
+    return 0;
+}
+```
+
+### [Luogu P2602 [ZJOI2010] 数字计数](https://www.luogu.com.cn/problem/P2602)
+
+**题目描述**：给定两个正整数 $a$ 和 $b$，求在 $[a,b]$ 中的所有整数中，每个数码（$0 \sim 9$）各出现了多少次。
+
+本题是数位 DP 的另一类经典衍生题——**带贡献统计的数位 DP**。普通的数位 DP 只需要我们在边界返回 `0` 或 `1` 来判断“这个数合不合法”，而本题要求统计各个数码出现的总次数。
+
+这意味我们的关注点从“**合法数字的个数**”转化为了“**数码在搜索路径上的累加贡献**”。
+
+在递归函数 `dfs(pos, cnt, lim, lead, d)` 中，每个维度的作用和核心逻辑如下：
+
+1. **`d`（当前统计的靶向数码）**：因为共有 $0 \sim 9$ 十个数码，我们在最外层通过 `for` 循环轮流对每一个数码 `d` 进行一次完整的数位 DP 计数。
+2. **`cnt`（已出现的次数）**：记录从最高位走到当前 `pos` 位，数码 `d` 已经被填写了多少次。这个值会作为参数**自顶向下**传递。
+3. **边界条件 `pos < 0`**：当所有数位填完时，这条合法的填数路径对数码 `d` 贡献的次数就是 `cnt`。因此，边界不再是返回固定的 `1`，而是直接返回累计的 `cnt`。
+4. **`f[pos][cnt]` 记忆化状态**：
+   - 状态含义：当不贴上限、不考虑前导零时，剩余未填的低 `pos` 位中，已经贡献了 `cnt` 次靶向数码的情况下，后面还能产生的数码 `d` 的**总贡献和**。
+   - **数位 DP 记忆化铁律**：依然只有在 `!lim && !lead` 的完全自由状态下，才能进行缓存的读取与写入。
+
+#### 💡 核心细节陷阱：前导零与数码 `0` 的冲突
+
+在这道题中，前导零的处理是最大的难点。
+对于数字 `12`，如果是三位数，在数位填数时表现为 `012`。
+
+- 如果我们当前正在统计数码 `2` 或 `1`，最高位的 `0` 不会产生影响（`i == d` 不成立）。
+- 但如果我们当前正在统计数码 `0`，最高位的 `0`（前导零）就**绝不能**被算进数码 `0` 的出现次数中！
+
+因此，在判断当前位填写的数字 `i` 是否能为 `cnt` 带来贡献时，必须满足：`!(lead && i == 0) && i == d`。即：**只有在不是前导零的前提下，填写的数字与靶向数码一致，贡献才能 $+1$**。
+
+---
+
+#### AC 代码
+
+```cpp line-numbers
+#include <bits/stdc++.h>
+using ll = long long;
+const ll N = 15;
+
+ll a, b;
+std::array<ll, 10> ans1, ans2;
+
+int main() {
+    std::cin.tie(0)->sync_with_stdio(0);
+
+    std::cin >> a >> b;
+    
+    auto get = [&](ll x) {
+        std::vector<int> num;
+        using Row = std::array<ll, N>;
+        std::array<Row, N> f;
+        std::array<ll, 10> res;
+        
+        // 将数字按位拆分放入 num 数组（低位在前，高位在后）
+        while (x) {
+            num.push_back(x % 10);
+            x /= 10;
+        }
+        
+        // pos:当前位, cnt:数码 d 已经出现的次数, lim:是否贴上限, lead:是否有前导零, d:靶向数码
+        auto dfs = [&](auto &self, int pos, int cnt, bool lim, bool lead, int d) -> ll {
+            // 边界条件：所有位数填写完毕，返回该数字中数码 d 出现的总次数
+            if (pos < 0)
+                return cnt;
+                
+            // 只有在通用状态下，才能复用和写入记录
+            if (!lim && !lead && f[pos][cnt] != -1)
+                return f[pos][cnt];
+                
+            ll ans = 0;
+            int up = lim ? num[pos] : 9;
+            
+            for (int i = 0; i <= up; i++) {
+                int flag = 0;
+                // 核心：排除前导零对数码 0 统计的干扰
+                if (!(lead && i == 0) && i == d)
+                    flag++;
+                    
+                // 状态转移：更新 cnt + flag，同时下层 limit 依然由当前 limit 与是否填到最大值 up 共同决定
+                ans += self(self, pos - 1, cnt + flag, lim && (i == up), lead && (i == 0), d);
+            }
+            
+            // 缓存通用状态的结果
+            if (!lim && !lead)
+                f[pos][cnt] = ans;
+                
+            return ans;
+        };
+        
+        // 分别对 0 ~ 9 这十个数字进行靶向数位 DP
+        for (int i = 0; i <= 9; i++) {
+            // 注意：每次更换统计的数字时，DP 状态数组必须重新初始化为 -1
+            std::memset(&f, -1, sizeof(f));
+            res[i] = dfs(dfs, num.size() - 1, 0, true, true, i);
+        }
+        return res;
+    };
+
+    // 经典前缀和思想转化区间查询：[a, b] 的答案 = get(b) - get(a - 1)
+    ans1 = get(a - 1);
+    ans2 = get(b);
+    
+    for (int i = 0; i <= 9; i++)
+        std::cout << ans2[i] - ans1[i] << " \n"[i == 9];
+        
+    return 0;
+}
+```
