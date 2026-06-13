@@ -1,16 +1,54 @@
 {
     "system_version": "1.0.0",
     "global_stats": {
-        "total_problems_attempted": 0,
+        "total_problems_attempted": 1,
         "total_problems_solved": 0,
         "overall_error_distribution": {
             "M-ERR": 0,
-            "L-ERR": 0,
+            "L-ERR": 1,
             "C-ERR": 0,
             "B-ERR": 0,
             "I-ERR": 0
         }
     },
-    "skill_matrix": {},
-    "problem_logs": []
+    "skill_matrix": {
+        "图论-最小环": {
+            "knowledge_point": "求最小环（无向图通过 Floyd + 边枚举）",
+            "mastery_score": 1,
+            "error_tags": [
+                "L-ERR"
+            ],
+            "dominant_error": "L-ERR",
+            "recent_mistakes": [
+                {
+                    "problem": "学校景点最优路线（最小环）",
+                    "error_type": "L-ERR",
+                    "description": "在构造环时，直接用 g[i][k] + g[k][j] 替代边 (i,j) 的绕行路径，但未确保这条最短路本身不包含边 (i,j)，导致边被重复计算",
+                    "root_cause": "对最小环的核心机理理解不深——不清楚需要对每条边进行「隔离」处理，或缺少三层 Floyd 的分层思想",
+                    "fix_strategy": "对每条直接边 (u,v,w)，单独计算不经过该边的 u 到 v 的最短距离，再加上 w 得到环长"
+                }
+            ]
+        }
+    },
+    "problem_logs": [
+        {
+            "id": 1,
+            "problem_name": "学校景点最优路线（最小环）",
+            "date": "2026-06-13",
+            "status": "WA",
+            "errors": [
+                {
+                    "tag": "L-ERR",
+                    "category": "图论/搜索",
+                    "severity": "critical"
+                }
+            ],
+            "verdict": "Algorithm logic flaw in minimum cycle construction"
+        }
+    ],
+    "training_strategy": {
+        "current_phase": "深化图论最小环算法的核心机理",
+        "next_action": "推荐同板块的经典最小环变式题（如：求最小环的 k 条不相交路径、加权环等）",
+        "avoid": "暂不推荐新图论算法，夯实当前逻辑漏洞"
+    }
 }
