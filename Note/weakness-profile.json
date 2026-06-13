@@ -1,0 +1,16 @@
+{
+    "system_version": "1.0.0",
+    "global_stats": {
+        "total_problems_attempted": 0,
+        "total_problems_solved": 0,
+        "overall_error_distribution": {
+            "M-ERR": 0,
+            "L-ERR": 0,
+            "C-ERR": 0,
+            "B-ERR": 0,
+            "I-ERR": 0
+        }
+    },
+    "skill_matrix": {},
+    "problem_logs": []
+}
