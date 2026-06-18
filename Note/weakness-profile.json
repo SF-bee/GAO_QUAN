@@ -1,14 +1,14 @@
 {
     "system_version": "1.0.0",
     "global_stats": {
-        "total_problems_attempted": 1,
-        "total_problems_solved": 0,
+        "total_problems_attempted": 2,
+        "total_problems_solved": 1,
         "overall_error_distribution": {
             "M-ERR": 0,
             "L-ERR": 1,
             "C-ERR": 0,
             "B-ERR": 0,
-            "I-ERR": 0
+            "I-ERR": 1
         }
     },
     "skill_matrix": {
@@ -28,6 +28,23 @@
                     "fix_strategy": "对每条直接边 (u,v,w)，单独计算不经过该边的 u 到 v 的最短距离，再加上 w 得到环长"
                 }
             ]
+        },
+        "图论-单源最短路": {
+            "knowledge_point": "Dijkstra 算法堆优化",
+            "mastery_score": 4,
+            "error_tags": [
+                "I-ERR"
+            ],
+            "dominant_error": "I-ERR",
+            "recent_mistakes": [
+                {
+                    "problem": "德克萨斯夏日运牛奶",
+                    "error_type": "I-ERR",
+                    "description": "在嵌套循环中，堆中的距离变量 d 与边的权值变量 _d 发生命名混淆，导致松弛公式计算错误；且遗漏了 vis[u] = 1 的标记更新",
+                    "root_cause": "局部作用域变量命名过于简短（d 与 _d），极易在混淆的松弛公式中写错，且未严谨遵循 Dijkstra 状态更新流程（遗漏访问标记）",
+                    "fix_strategy": "强制使用 dist_u 与 edge_w 等显式语义命名，杜绝同音/近形变量在同一作用域内碰撞；书写 SSSP 时优先写完 vis 标记"
+                }
+            ]
         }
     },
     "problem_logs": [
@@ -44,11 +61,25 @@
                 }
             ],
             "verdict": "Algorithm logic flaw in minimum cycle construction"
+        },
+        {
+            "id": 2,
+            "problem_name": "德克萨斯夏日运牛奶",
+            "date": "2026-06-18",
+            "status": "AC",
+            "errors": [
+                {
+                    "tag": "I-ERR",
+                    "category": "图论/单源最短路",
+                    "severity": "minor"
+                }
+            ],
+            "verdict": "Correct after fixing naming collision and vis array update"
         }
     ],
     "training_strategy": {
-        "current_phase": "深化图论最小环算法的核心机理",
-        "next_action": "推荐同板块的经典最小环变式题（如：求最小环的 k 条不相交路径、加权环等）",
-        "avoid": "暂不推荐新图论算法，夯实当前逻辑漏洞"
+        "current_phase": "单源最短路板子已巩固，需加强图论建模及防笔误规范",
+        "next_action": "推荐同板块的最短路变式题（如分层图最短路或带有约束的 SSSP 题），并在编码前默念命名防纠缠律",
+        "avoid": "暂不需要刻意回避其他图论，但写代码时必须落实显式命名，防止 [I-ERR] 再次发生"
     }
 }
