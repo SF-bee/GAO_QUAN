@@ -21,8 +21,7 @@ int main() {
     for (q.push({dis[ts] = 0, ts}); !q.empty();) {
         auto [d, u] = q.top();
         q.pop();
-        if (vis[u])
-            continue;
+        if (vis[u]) continue;
         vis[u] = 1;
         for (auto [_d, v] : g[u])
             if (dis[v] > dis[u] + _d)
