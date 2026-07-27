@@ -1,14 +1,14 @@
 {
     "system_version": "1.0.0",
     "global_stats": {
-        "total_problems_attempted": 1,
-        "total_problems_solved": 0,
+        "total_problems_attempted": 3,
+        "total_problems_solved": 2,
         "overall_error_distribution": {
             "M-ERR": 0,
             "L-ERR": 1,
             "C-ERR": 0,
-            "B-ERR": 0,
-            "I-ERR": 0
+            "B-ERR": 1,
+            "I-ERR": 1
         }
     },
     "skill_matrix": {
@@ -28,6 +28,31 @@
                     "fix_strategy": "对每条直接边 (u,v,w)，单独计算不经过该边的 u 到 v 的最短距离，再加上 w 得到环长"
                 }
             ]
+        },
+        "图论-单源最短路": {
+            "knowledge_point": "Dijkstra 算法堆优化",
+            "mastery_score": 4,
+            "error_tags": [
+                "I-ERR",
+                "B-ERR"
+            ],
+            "dominant_error": "I-ERR",
+            "recent_mistakes": [
+                {
+                    "problem": "德克萨斯夏日运牛奶",
+                    "error_type": "I-ERR",
+                    "description": "在嵌套循环中，堆中的距离变量 d 与边的权值变量 _d 发生命名混淆，导致松弛公式计算错误；且遗漏了 vis[u] = 1 的标记更新",
+                    "root_cause": "局部作用域变量命名过于简短（d 与 _d），极易在混淆的松弛公式中写错，且未严谨遵循 Dijkstra 状态更新流程（遗漏访问标记）",
+                    "fix_strategy": "强制使用 dist_u 与 edge_w 等显式语义命名，杜绝同音/近形变量在同一作用域内碰撞；书写 SSSP 时优先写完 vis 标记"
+                },
+                {
+                    "problem": "世界地图城市最短路径",
+                    "error_type": "B-ERR",
+                    "description": "没有考虑图不连通时需要输出“No path”的情况，导致边界测试未覆盖失败",
+                    "root_cause": "边界条件检查不充分，通常只关注最短路径本身而忽略断开连接时的特殊输出",
+                    "fix_strategy": "每次最短路题目结束后，先判断目标节点是否依然是初始无穷大/未访问状态，再输出断开连接的特殊结果"
+                }
+            ]
         }
     },
     "problem_logs": [
@@ -44,11 +69,39 @@
                 }
             ],
             "verdict": "Algorithm logic flaw in minimum cycle construction"
+        },
+        {
+            "id": 2,
+            "problem_name": "德克萨斯夏日运牛奶",
+            "date": "2026-06-18",
+            "status": "AC",
+            "errors": [
+                {
+                    "tag": "I-ERR",
+                    "category": "图论/单源最短路",
+                    "severity": "minor"
+                }
+            ],
+            "verdict": "Correct after fixing naming collision and vis array update"
+        },
+        {
+            "id": 3,
+            "problem_name": "世界地图城市最短路径",
+            "date": "2026-06-18",
+            "status": "AC",
+            "errors": [
+                {
+                    "tag": "B-ERR",
+                    "category": "图论/最短路边界",
+                    "severity": "minor"
+                }
+            ],
+            "verdict": "Solved, but must always handle disconnected target output as a separate branch"
         }
     ],
     "training_strategy": {
-        "current_phase": "深化图论最小环算法的核心机理",
-        "next_action": "推荐同板块的经典最小环变式题（如：求最小环的 k 条不相交路径、加权环等）",
-        "avoid": "暂不推荐新图论算法，夯实当前逻辑漏洞"
+        "current_phase": "单源最短路板子已巩固，需加强图论边界条件检查",
+        "next_action": "练习最短路题目时显式列出“连通/不连通”两种情况，并在代码末尾先判断目标是否仍为初始无穷大",
+        "avoid": "避免在图论题中只关注路径长度计算，而忽视连通性判断和特殊输出格式"
     }
 }
