@@ -12,6 +12,8 @@ struct DSU {
     int find(int x) { return fa[x] == x ? x : fa[x] = find(fa[x]); }
     void merge(int x, int y) {
         int fx = find(x), fy = find(y);
+        if (fx == fy)
+            return;
         if (siz[fx] < siz[fy])
             std::swap(fx, fy);
         fa[fy] = fa[fx];
