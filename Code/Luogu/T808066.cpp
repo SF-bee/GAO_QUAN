@@ -1,13 +1,38 @@
 #include <bits/stdc++.h>
-const int MAX = 
+const int MAX = 2e5 + 5;
 
+int n, m;
+bool a[MAX], b[MAX];
+std::vector<int> g[MAX];
 struct node {
-    std::list<int> le, et;
+    std::list<int> s, t;
 };
 
 int main() {
     std::cin.tie(0)->sync_with_stdio(0);
 
+    std::cin >> n >> m;
+    for (int v, i = 1; i <= m; i++)
+        std::cin >> v, a[v] = 1;
+    for (int v, i = 1; i <= m; i++)
+        std::cin >> v, b[v] = 1;
+    for (int u, v, i = 1; i < n; i++) {
+        std::cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+
+    std::vector<std::pair<int, int>> ans1, ans2;
+    auto dfs = [&](auto &self, int u, int p, node &tmp) -> void {
+        if (g[u].size() == 1 && u != 1) {
+            if (a[u] && !b[u])
+                tmp.s.push_back(u);
+            else if (!a[u] && b[u])
+                tmp.t.push_back(u);
+            else
+                ans1.push_ba
+        }
+    };
     return 0;
 }
 /*
