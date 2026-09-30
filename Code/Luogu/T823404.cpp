@@ -4,33 +4,34 @@ const int MAX = 2e5 + 5;
 
 int n, q;
 std::vector<std::pair<int, int>> g[MAX];
-int fe[MAX], fa[MAX], son[MAX], siz[MAX], dep[MAX];
-int tim, top[MAX], dfn[MAX], idfn[MAX];
+ll ssiz[MAX]; // 下标是dfn
+int c[MAX], siz[MAX], son[MAX], dep[MAX], fa[MAX];
+int tim, dfn[MAX], rnk[MAX], top[MAX];
+ll f1;
 
 struct SegmentTree {
-    // sum存从根到某个点路径上的逆行道数量
     struct Node {
-        int sum;
-        bool tag = 0;
-    } node[4 * MAX];
-#define ls(x) (x << 1)
-#define rs(x) (x << 1 | 1)
-    void PushUp(int p) { node[p].sum = node[ls(p)].sum + node[rs(p)].sum; }
-    void Apply(int p, int l, int r) {
-        node[p].sum = r - l + 1 - node[p].sum;
-        node[p].tag ^= 1;
+        int c_sum;
+        ll csiz_sum;
+        bool tag;
+    } tre[MAX << 2];
+#define ls(p) (p << 1)
+#define rs(p) (p << 1 | 1)
+    bool in(int l, int r, int ql, int qr) { return l <= ql && qr <= r; }
+    bool out(int l, int r, int ql, int qr) { return qr < l || ql > r; }
+    void PushUp(int p) {
+        tre[p].c_sum = tre[ls(p)].c_sum + tre[rs(p)].c_sum;
+        tre[p].csiz_sum = tre[ls(p)].csiz_sum + tre[rs(p)].csiz_sum;
     }
-    void PushDown(int p, int l, int r) {
-        if (!node[p].tag) return;
-        int mid = (l + r) >> 1;
-        Apply(ls(p), l, mid);
-        Apply(rs(p), mid + 1, r);
-        node[p].tag = 0;
+    void Apply(int p, int l, int r) {
+        tre[p].c_sum = (r - l + 1) - tre[p].c_sum;
+        tre[p].csiz_sum = (ssiz[r] - ssiz[l - 1]) - tre[p].csiz_sum;
+        tre[p].tag ^= 1;
     }
     void Build(int p, int l, int r) {
         if (l == r) {
-            node[p].sum = fe[idfn[l]];
-            return;
+            tre[l].c_sum = c[rnk[l]];
+            tre[l].csiz_sum = c[rnk[l]] * siz[l];
         }
         int mid = (l + r) >> 1;
         Build(ls(p), l, mid);
@@ -38,45 +39,44 @@ struct SegmentTree {
         PushUp(p);
     }
     void Update(int p, int l, int r, int ql, int qr) {
-        if (ql <= l && r <= qr) {
+        if (in(l, r, ql, qr)) {
             Apply(p, l, r);
             return;
         }
-        PushDown(p, l, r);
+        if (out(l, q, ql, qr)) return;
         int mid = (l + r) >> 1;
-        if (ql <= mid) Update(ls(p), l, mid, ql, qr);
-        if (qr > mid) Update(rs(p), mid + 1, r, ql, qr);
-        PushUp(p);
-        return;
+        Update(ls(p), l, mid, ql, qr);
+        Update(rs(p), mid + 1, r, ql, qr);
     }
-    int Query(int p, int l, int r, int ql, int qr) {
-        if (l > qr || r < ql) return 0;
-        if (ql <= l && r <= qr) return node[p].sum;
-        PushDown(p, l, r);
+    int Queryc(int p, int l, int r, int ql, int qr) {
+        if (in(l, r, ql, qr)) return tre[p].c_sum;
+        if (out(l, r, ql, qr)) return 0;
         int mid = (l + r) >> 1;
-        return Query(ls(p), l, mid, ql, qr) + Query(rs(p), mid + 1, r, ql, qr);
+        return Queryc(ls(p), l, mid, ql, qr) + Queryc(rs(p), mid + 1, r, ql, qr);
+    }
+    ll Querysiz(int p, int l, int r, int ql, int qr) {
+        if (in(l, r, ql, qr)) return tre[p].csiz_sum;
+        if (out(l, r, ql, qr)) return 0;
+        int mid = (l + r) >> 1;
+        return Querysiz(ls(p), l, mid, ql, qr) + Querysiz(rs(p), mid + 1, r, ql, qr);
     }
 } seg;
 
 void dfs1(int u, int f) {
     siz[u] = 1;
     dep[u] = dep[f] + 1;
-    for (auto [v, fg] : g[u])
-        if (v != f) {
-            dfs1(v, u);
-            fe[v] = fg ^ 1;
-            fa[v] = u;
-            siz[u] += siz[v];
-            if (siz[v] > siz[son[u]]) son[u] = v;
-        }
+    、 for (auto [v, fg] : g[u]) if (v != f) {
+        dfs1(v, u);
+        siz[u] += siz[v];
+        c[v] = 1 - fg;
+        if (siz[son[u]] < siz[v]) son[u] = v;
+    }
 }
-void dfs2(int u, int t) {
-    dfn[u] = ++tim;
-    idfn[dfn[u]] = u;
-    top[u] = t;
-    if (son[u]) dfs2(son[u], t);
+void dfs2(int u, int ftop) {
+    top[u] = ftop, dfn[u] = ++tim, siz[tim] = 1, rnk[u] = tim;
+    if (son[u]) dfs2(son[u], ftop), siz[tim] += siz[rnk[son[u]]];
     for (auto [v, fg] : g[u])
-        if (v != fa[u] && v != son[u]) dfs2(v, v);
+        if (v != fa[u] && v != son[u]) dfs2(v, v), siz[tim] += siz[rnk[v]];
 }
 void Update(int u, int v) {
     while (top[u] != top[v]) {
@@ -84,38 +84,19 @@ void Update(int u, int v) {
         seg.Update(1, 1, n, dfn[top[u]], dfn[u]);
         u = fa[top[u]];
     }
-    if (dep[u] > dep[v]) std::swap(u, v);
-    if (dfn[u] < dfn[v]) seg.Update(1, 1, n, dfn[u] + 1, dfn[v]);
+    if (dep[u] < dep[v]) std::swap(u, v);
+    seg.Update(1, 1, n, dfn[v] + 1, dfn[u]);
+    f1 = siz[n] - siz[1] - seg.Querysiz(1, 1, n, 2, n);
 }
-int Query(int u, int v) {
-    auto getLca = [](int x, int y) {
-        while (top[x] != top[y]) {
-            if (dep[top[x]] > dep[top[y]]) x = fa[top[x]];
-            else
-                y = fa[top[y]];
-        }
-        return dep[x] < dep[y] ? x : y;
-    };
-    auto getSum = [](int x, int anc) {
-        int sum = 0;
-        while (top[x] != top[anc]) {
-            sum += seg.Query(1, 1, n, dfn[top[x]], dfn[x]);
-            x = fa[top[x]];
-        }
-        if (x != anc) sum += seg.Query(1, 1, n, dfn[anc] + 1, dfn[x]);
-        return sum;
-    };
-    int p = getLca(u, v);
-    int su = getSum(u, p);
-    int sv = getSum(v, p);
-    return su + (dep[v] - dep[p]) - sv;
+int Query(int u) {
+    int tot = 0;
+    while (top[u] != 1)
+        tot += seg.Queryc(1, 1, n, dfn[top[u]], dfn[u]);
+    if (u != 1) tot += seg.Queryc(1, 1, n, 2, dfn[u]);
+    return tot;
 }
 
 int main() {
-#if !ONLINE_JUDGE
-    freopen(".in", "r", stdin);
-    freopen(".out", "w", stdout);
-#endif
     std::cin.tie(0)->sync_with_stdio(0);
 
     std::cin >> n >> q;
@@ -124,13 +105,15 @@ int main() {
         g[u].emplace_back(v, 0);
         g[v].emplace_back(u, 1);
     }
+
     dfs1(1, 0);
     dfs2(1, 1);
+    for (int i = 1; i <= n; i++)
+        siz[i] += siz[i - 1];
     seg.Build(1, 1, n);
-
+    f1 = siz[n] - siz[1] - seg.Querysiz(1, 1, n, 2, n);
     while (q--) {
         int op, u, v;
-        ll ans = 0;
         std::cin >> op >> u;
         switch (op) {
         case 1:
@@ -138,22 +121,28 @@ int main() {
             Update(u, v);
             break;
 
-        case 2:
-            for (int i = 1; i <= n; i++) {
-                if (i == u) continue;
-                ans += Query(u, i);
-            }
-            std::cout << ans << '\n';
+        default:
+            std::cout << f1 + Query(u) - siz[u] << '\n';
             break;
         }
     }
     return 0;
 }
 /*
-树剖板子？？？
-打部分分走人
-考虑已知 u,v 的 lca fa和路径长度 l 与儿子到祖先路径上的的反向边数量 c
-那么查询 w(u,v) 就是u_c + (l - v_c)
-每次修改nlogn，每次查询n^2logn
-坏了，不兑！
+考虑sub2 没有修改
+可以树形dp
+设 c[i] 为根到 i的边 是0/否1 是逆行边
+设 f[u] 表示 u 的查询答案，考虑如何从父节点转移到这个答案
+从父亲顺行1到 u 那么对于 u 子树内答案的贡献不变，但是其他所有点都会贡献1，所以答案 +(n - siz[u])
+从父亲逆行0到 u 那么对于 u 子树内答案全部撤销，但是到其他所有点的贡献不变，所以答案 -siz[u]
+
+考虑正解：一眼树剖，但是线段树要维护什么信息？
+f[1] = /sum siz[i] - /sum c[i]*siz[i]
+前一项是定值，后一项相当于一个区间求和
+f[u] = f[fa] + （1-c[i]）(-siz[u]) + c[u](n - siz[u])
+     = f[fa] + c[i]siz[u]- siz[u] + c[u]n - c[i]siz[u]
+     = f[fa] + c[u]n - siz[u]
+     = f[1] + n*(路径上c[i]=1的数量) - /sum siz[u]
+df[u] = n*(路径上c[i]=1的数量) - /sum siz[u]
+前一项是区间求和，后一项是定值
 */
