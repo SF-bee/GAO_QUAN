@@ -26,6 +26,7 @@ debug.exe
 *.out
 *.ans
 *.txt   # 如果临时测试文件也忽略
+*.prob
 checker.cpp
 data/
 testdata/
