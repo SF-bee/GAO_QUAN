@@ -27,6 +27,7 @@ debug.exe
 *.ans
 *.txt   # 如果临时测试文件也忽略
 .cph/
+.cph-ng/
 checker.cpp
 data/
 testdata/
