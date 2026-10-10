@@ -25,7 +25,7 @@ debug.exe
 *.in
 *.out
 *.ans
-*.txt   # 如果临时测试文件也忽略
+# *.txt              # 临时测试文件：拿不准，先注释掉，不启用
 .cph/
 .cph-ng/
 checker.cpp
@@ -34,10 +34,10 @@ testdata/
 input/
 output/
 
-# VSCode 配置（便携版常见目录）
+# VSCode 配置：路径已改成盘符无关，因此纳入版本管理
+# （原 .vscode/ 忽略已移除，让编译/调试配置跟仓库一起走）
 .vscode/
 .vscode/*
-.cph/           # 竞赛辅助插件目录
 
 # 其他编辑器临时文件
 *.swp
@@ -53,8 +53,8 @@ output/
 *.tar.gz
 
 # 测试或调试专用文件
-testlib-0.9.41   # testlib 库文件
-check.cpp        # 自定义对拍/校验程序
+testlib-0.9.41
+check.cpp
 
 # 个人脚本/配置备份（如果有）
 *.bat
