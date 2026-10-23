@@ -2,34 +2,30 @@
 const int MAX = 5e2 + 5;
 
 int n, k;
-int v[MAX], a[MAX], b[MAX];
-
-void solve1() {
-    std::sort(a + 1, a + n + 1);
-    double ans = 0;
-    for (int i = 1; i <= k; i++)
-        ans += 1.0 * a[i] / v[0];
-    std::cout << std::fixed << std::setprecision(6) << ans << '\n';
-}
-void solve2() { std::cout << 114514; }
+int v[MAX];
+std::pair<int, int> r[MAX];
+double dp[MAX][MAX];
 
 int main() {
     std::cin.tie(0)->sync_with_stdio(0);
 
-    bool flag1 = 1, flag2 = 1;
     std::cin >> n >> k;
-    for (int i = 0; i <= n; i++) {
+    for (int i = 1; i <= n; ++i)
         std::cin >> v[i];
-        if (i > 0 && v[i] != v[i - 1]) flag1 = 0;
-    }
+    for (int i = 1; i <= n; ++i)
+        std::cin >> r[i].first >> r[i].second;
+    std::sort(r + 1, r + n + 1, [](const auto &a, const auto &b) {
+        if (a.second == -1 && b.second == -1) return false;
+        if (a.second == -1) return false;
+        if (b.second == -1) return true;
+        return a.second < b.second;
+    });
 
-    for (int i = 1; i <= n; i++) {
-        std::cin >> a[i] >> b[i];
-        if (b[i] != -1) flag2 = 0;
+    for (int m = 0; m <= k; ++m) {
+        std::memset(dp, 0x3f, sizeof(dp));
+        for (int i = 1; i <= n; ++i) {
+        }
     }
-    if (flag1 || flag2) solve1();
-    else
-        solve2();
     return 0;
 }
 /*
@@ -49,4 +45,14 @@ n < 70
 或者是直接从 0 修好 dp[i - 1][j - 1][k - 1] + a[i] / a[j - 1]
 枚举顺序呢？
 不对，这样设计有后效性了，我先修后面的塔有可能让前面更优，可能需要排序
+
+如果一个 a 要被维修，那么放到后面再修一定是不劣的
+因为如果在一个 b 前修，那么一定是不如在后面修更好的
+然后按照 b 进行排序（-1不参与排序？），那么答案的形式一定是把某个长度的前缀全部修 a 或者 b
+然后再从最后一个 b 之后选择最小的 a 补齐
+然后枚举我们要修 m 个 b，然后dp_i,j表示考虑前 i 个维修了 j 个 b 的最小用时
+转移就是
+dp_i,j = min(dp_{i-1,j-1} + b[i]/v[j-1],dp_{i-1,j} + a[i]/v[m])
+对于每一个 m跑完之后 我们再固定 j = m，然后枚举 i，这样每一个
+i都会分成两部分：一部分是前缀全部修完，剩下的部分就选小的a补齐
 */
