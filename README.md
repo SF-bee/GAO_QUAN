@@ -48,7 +48,7 @@ $$\small\texttt{本}\huge\texttt{人}_{\small\texttt{的}^{\large\texttt{萌新}
 ### 编译运行
 
 ```bash
-g++ sol.cpp -o main -O2 -std=c++14 -Wall -Wextra -fsanitize=address;./main
+g++ sol.cpp -o main -O2 -std=c++14 -Wall -Wextra -Wl,stack=268435456;./main
 ```
 
 ## 🤝 贡献与交流
