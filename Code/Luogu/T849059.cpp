@@ -38,25 +38,25 @@ int main() {
             }
         dp[u][-r[u] + 50] = res;
         // 不选
-        ll f[K];
+        static ll f[K];
         for (int k = -50; k <= 51; k++)
             f[k + 50] = -INF;
         f[51 + 50] = 0;
         for (auto v : g[u])
             if (v != fa) {
-                ll g[K];
+                static ll g[K];
                 for (int s = -50; s <= 51; s++)
                     g[s + 50] = -INF;
                 for (int s = -50; s <= 51; s++) {
                     int k = std::min(51, s + 1);
                     g[k + 50] = std::max(g[k + 50], dp[v][s + 50]);
                 }
-                ll F[K + 1], G[K + 1];
+                static ll F[K + 1], G[K + 1];
                 F[K] = G[K] = -INF;
                 for (int s = 51; s >= -50; s--)
                     F[s + 50] = std::max(f[s + 50], F[s + 51]),
                           G[s + 50] = std::max(g[s + 50], G[s + 51]);
-                ll h[K];
+                static ll h[K];
                 for (int k = -50; k <= 51; k++)
                     h[k + 50] = -INF;
                 for (int k = 51; k >= -50; k--) {
